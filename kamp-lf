@@ -1,7 +1,14 @@
 #!/bin/sh
 
+# usage: kamp-lf [cd-or-select-path]
+
 set -e
-selection=$(lf -print-selection)
+selection=
+if [ -z "$1" ]; then
+	selection=$(lf -print-selection)
+else
+	selection=$(lf -print-selection $1)
+fi
 if [ -n "$selection" ]; then
 	kamp edit $selection
 	if [ "$(echo $selection | wc -w)" -gt 1 ]; then
