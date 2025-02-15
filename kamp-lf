@@ -2,16 +2,6 @@
 
 # usage: kamp-lf [cd-or-select-path]
 
-set -e
-selection=
-if [ -z "$1" ]; then
-	selection=$(lf -print-selection)
-else
-	selection=$(lf -print-selection $1)
-fi
-if [ -n "$selection" ]; then
-	kamp edit $selection
-	if [ "$(echo $selection | wc -w)" -gt 1 ]; then
-		kamp-buffers
-	fi
-fi
+lf -print-selection "${1:-.}" | tee \
+>(wc -l | { read lines; if [ "$lines" -gt 1 ]; then kamp send 'connect terminal kamp-buffers'; fi } ) \
+>(xargs --replace --delimiter '\n' kamp edit '{}');
